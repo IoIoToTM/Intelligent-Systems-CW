@@ -7,7 +7,7 @@ class FieldState
 {
 
 public:
-	FieldState(Player p,std::vector<Block> blocks);
+	FieldState(Player p,std::vector<Block> blocks,int width = 4, int heigth = 4);
 	FieldState();
 	friend bool operator==(const FieldState& left, const FieldState& right);
 	const Position* getPlayerPos() const;

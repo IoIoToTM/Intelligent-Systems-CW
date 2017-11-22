@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "FieldState.h"
 
-FieldState::FieldState(Player p, std::vector<Block> blocks)
+FieldState::FieldState(Player p, std::vector<Block> blocks,int width,int heigth)
 {
 	this->p = p;
 	this->blocks = blocks;
+	this->width = width;
+	this->height = heigth;
 }
 
 
@@ -45,6 +47,8 @@ bool operator==(const FieldState& left, const FieldState& right)
 
 FieldState::FieldState():p()
 {
+	width = 4;
+	height = 4;
 }
 
 const Position * FieldState::getPlayerPos() const

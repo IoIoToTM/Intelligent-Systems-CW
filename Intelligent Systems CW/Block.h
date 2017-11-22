@@ -7,7 +7,7 @@ public:
 	Block();
 	friend bool operator==(const Block& left, const Block& right);
 
-	Block(int x, int y, char name);
+	Block(Position pos, char name);
 	~Block();
 
 	char getName() const;

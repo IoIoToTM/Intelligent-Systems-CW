@@ -2,7 +2,7 @@
 #include "Field.h"
 
 
-Field::Field() :p(4,4)
+Field::Field() :p(Position(4,4))
 {
 	this->heigth = 4;
 	this->width = 4;
@@ -16,6 +16,14 @@ Field::Field(int width, int heigth, Player p, std::vector<Block> blocks)
 	this->width = width;
 	this->p = p;
 	this->blocks = blocks;
+}
+
+Field::Field(int width, int heigth, FieldState state) :p(*state.getPlayerPos())
+{
+	this->heigth = heigth;
+	this->width = width;
+	this->blocks = state.getBlocks();
+	//this->p = state.getPlayerPos();
 }
 
 
@@ -91,6 +99,21 @@ bool Field::isGoalReached()
 		return true;
 	}
 	return false;
+}
+
+FieldState Field::getFieldState()
+{
+	return FieldState(p,blocks);
+}
+
+int Field::getWidth() const
+{
+	return this->width;
+}
+
+int Field::getHeigth() const
+{
+	return this->heigth;
 }
 
 

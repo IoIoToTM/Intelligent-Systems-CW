@@ -5,7 +5,7 @@ class Tile
 {
 public:
 	Tile();
-	Tile(int x, int y);
+	Tile(Position pos);
 	~Tile();
 
 	const Position* getPosition() const;

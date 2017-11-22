@@ -8,6 +8,10 @@ Position::Position(int x, int y)
 	this->y = y;
 }
 
+Position::Position()
+{
+}
+
 
 Position::~Position()
 {

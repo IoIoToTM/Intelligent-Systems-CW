@@ -6,7 +6,7 @@ Block::Block() :Tile()
 {
 }
 
-Block::Block(int x, int y,char name) : Tile(x, y)
+Block::Block(Position pos,char name) : Tile(pos)
 {
 	this->name = name;
 }

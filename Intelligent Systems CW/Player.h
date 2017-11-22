@@ -5,7 +5,7 @@ class Player :
 {
 public:
 	Player();
-	Player(int x, int y);
+	Player(Position pos);
 	~Player();
 };
 

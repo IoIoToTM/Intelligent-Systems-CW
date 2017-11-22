@@ -6,10 +6,10 @@ Player::Player() : Tile()
 {
 	
 }
-Player::Player(int x, int y) : Tile(x, y)
+Player::Player(Position pos) : Tile(pos)
 {
-
 }
+
 
 
 Player::~Player()

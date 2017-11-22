@@ -5,10 +5,13 @@ class Tree
 {
 public:
 	Tree(FieldState state);
+	Tree(FieldState state,Tree* parent);
 	~Tree();
+
+	void addChild(Tree* child);
 private:
 	Tree* children[4];
-	Tree* root;
+	Tree* parent;
 	FieldState state;
 	
 };

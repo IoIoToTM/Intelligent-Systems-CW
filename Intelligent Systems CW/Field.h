@@ -16,6 +16,7 @@ class Field
 public:
 	Field();
 	Field(int width, int heigth, Player p, std::vector <Block> blocks);
+	Field(int width, int heigth, FieldState state);
 	~Field();
 
 	void printField();
@@ -25,6 +26,12 @@ public:
 	void setWinningState(FieldState winningState);
 
 	bool isGoalReached();
+
+	FieldState getFieldState();
+
+	int getWidth() const;
+	int getHeigth() const;
+
 private:
 	int width, heigth;
 	Player p;

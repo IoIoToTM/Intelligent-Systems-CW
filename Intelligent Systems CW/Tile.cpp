@@ -7,10 +7,12 @@ Tile::Tile() :pos(0,0)
 	
 }
 
-Tile::Tile(int x, int y) :pos(x,y)
+Tile::Tile(Position pos)
 {
-	
+	this->pos = pos;
 }
+
+
 
 const Position* Tile::getPosition() const
 {

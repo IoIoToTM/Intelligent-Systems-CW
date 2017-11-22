@@ -4,6 +4,7 @@ class Position
 {
 public:
 	Position(int x, int y);
+	Position();
 	~Position();
 
 	friend bool operator==(const Position& left, const Position& right);
