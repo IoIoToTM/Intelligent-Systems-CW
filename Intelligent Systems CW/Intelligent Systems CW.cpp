@@ -15,7 +15,46 @@
 
 void doBFS(Field f)
 {
-	std::queue <Tree> checkNodes;
+	std::queue <Tree*> checkNodes;
+	Tree root(f.getFieldState());
+	Tree* rootPointer = &root;
+
+	int fieldHeigth = f.getHeigth();
+	int fieldWidth = f.getWidth();
+	int moves = 0;
+
+	checkNodes.push(&root);
+
+	while (true)
+	{
+		Tree* nodeToExplore = checkNodes.front();
+		FieldState currentState = *nodeToExplore->getState();
+		checkNodes.pop();
+
+		for (int i = 0; i <4; i++)
+		{
+			Field temp(fieldWidth,fieldHeigth,currentState);
+			temp.movePlayer(static_cast<Direction> (i));
+			if (temp.isGoalReached()) 
+			{
+				std::cout << "GOAL REACHED";
+				return; 
+			}
+			Tree *child = new Tree(temp.getFieldState(), nodeToExplore);
+			nodeToExplore->addChild(child);
+			checkNodes.push(child);
+		}
+		moves++;
+
+		/*if (moves % 100 == 0)
+		{
+			std::cout << "";
+		}*/
+
+
+	}
+
+
 
 }
 
@@ -41,8 +80,8 @@ void doDFS(Field f)
 
 			Field temp(fieldWidth, fieldHeigth, f.getFieldState());
 			temp.movePlayer(static_cast<Direction> (i));
-			Tree *child1 = new Tree(temp.getFieldState(), rootPointer);
-			rootPointer->addChild(child1);
+			Tree *child = new Tree(temp.getFieldState(), rootPointer);
+			rootPointer->addChild(child);
 		}
 
 		f.movePlayer(randomDir);
@@ -118,6 +157,7 @@ int main()
 
 
 	//doDFSNoMemory(f);
+	doBFS(f);
 
 	int x;
 	

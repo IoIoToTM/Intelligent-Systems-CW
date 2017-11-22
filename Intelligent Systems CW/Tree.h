@@ -8,6 +8,8 @@ public:
 	Tree(FieldState state,Tree* parent);
 	~Tree();
 
+	FieldState* getState();
+
 	void addChild(Tree* child);
 private:
 	Tree* children[4];
