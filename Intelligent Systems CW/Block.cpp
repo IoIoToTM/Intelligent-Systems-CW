@@ -12,12 +12,22 @@ Block::Block(int x, int y,char name) : Tile(x, y)
 }
 
 
+bool operator==(const Block& left, const Block& right) 
+{
+	
+	if (*left.getPosition() == *right.getPosition() && left.getName()==right.getName())
+	{
+		return true;
+	}
+	else return false;
+}
+
 Block::~Block() 
 {
 	
 }
 
-char Block::getName()
+char Block::getName() const
 {
 	return name;
 }

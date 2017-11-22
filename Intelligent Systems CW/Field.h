@@ -22,15 +22,18 @@ public:
 
 	Block* getBlockAtPos(Position p);
 	void movePlayer(Direction d);
-	void moveTile(Tile t, Direction d);
-	
+	void setWinningState(FieldState winningState);
+
+	bool isGoalReached();
 private:
 	int width, heigth;
 	Player p;
 	std::vector<Block> blocks;
+	FieldState winningState;
 
 	bool canPlayerMove(Direction d);
 	bool canTileMove(Tile t, Direction d);
+	bool checkIfBlocksAreTheSame(Block a, Block b);
 };
 
 

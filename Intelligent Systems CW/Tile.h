@@ -8,7 +8,7 @@ public:
 	Tile(int x, int y);
 	~Tile();
 
-	Position* getPosition();
+	const Position* getPosition() const;
 	void move(Direction d);
 private:
 	Position pos;

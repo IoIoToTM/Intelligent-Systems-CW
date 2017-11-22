@@ -5,10 +5,13 @@ class Block :
 {
 public:
 	Block();
+	friend bool operator==(const Block& left, const Block& right);
+
 	Block(int x, int y, char name);
 	~Block();
 
-	char getName();
+	char getName() const;
+
 private:
 	char name;
 };

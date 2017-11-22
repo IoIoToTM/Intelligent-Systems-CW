@@ -12,9 +12,9 @@ Tile::Tile(int x, int y) :pos(x,y)
 	
 }
 
-Position* Tile::getPosition()
+const Position* Tile::getPosition() const
 {
-	return &pos;
+	return &pos ;
 }
 
 void Tile::move(Direction d)

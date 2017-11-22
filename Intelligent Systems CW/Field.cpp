@@ -77,6 +77,22 @@ void Field::movePlayer(Direction d)
 
 }
 
+void Field::setWinningState(FieldState winningState)
+{
+	this->winningState = winningState;
+}
+
+bool Field::isGoalReached()
+{
+	FieldState stateOfFieldNow(p, blocks);
+
+	if (stateOfFieldNow == winningState)
+	{
+		return true;
+	}
+	return false;
+}
+
 
 
 bool Field::canPlayerMove(Direction d)
@@ -107,4 +123,18 @@ bool Field::canTileMove(Tile t, Direction d)
 	}
 
 	return true;
+}
+
+
+
+bool Field::checkIfBlocksAreTheSame(Block a, Block b)
+{
+	if (a.getPosition()->getX() == b.getPosition()->getX() && a.getPosition()->getY() == b.getPosition()->getY())
+	{
+		if (a.getName() == b.getName())
+		{
+			return true;
+		}
+	}
+	return false;
 }

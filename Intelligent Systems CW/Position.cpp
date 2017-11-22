@@ -13,12 +13,21 @@ Position::~Position()
 {
 }
 
-int Position::getX()
+
+bool operator==(const Position& left, const Position& right) 
+{
+	if (left.getX() == right.getX() && left.getY() == right.getY())
+	{
+		return true;
+	}
+	else return false;
+}
+int Position::getX() const
 {
 	return this->x;
 }
 
-int Position::getY()
+int Position::getY() const
 {
 	return this->y;
 }
