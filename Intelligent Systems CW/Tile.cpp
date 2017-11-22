@@ -2,40 +2,27 @@
 #include "Tile.h"
 
 
-Tile::Tile()
+Tile::Tile() :pos(0,0)
 {
-	pos = new Position(0,0);
+	
 }
 
-Tile::Tile(int x, int y)
+Tile::Tile(int x, int y) :pos(x,y)
 {
-	pos = new Position(x, y);
+	
 }
 
-int Tile::getXPos()
+Position* Tile::getPosition()
 {
-	return pos->getX();
-}
-
-int Tile::getYPos()
-{
-	return pos->getY();
-}
-
-void Tile::setXPos(int x)
-{
-	pos->setX(x);
-}
-void Tile::setYPos(int y)
-{
-	pos->setY(y);
+	return &pos;
 }
 
 void Tile::move(Direction d)
 {
-	pos->move(d);
+	this->pos.move(d);
 }
 
 Tile::~Tile()
 {
+	
 }

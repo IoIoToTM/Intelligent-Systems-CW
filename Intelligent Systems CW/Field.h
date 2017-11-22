@@ -18,25 +18,19 @@ public:
 	Field(int width, int heigth, Player p, std::vector <Block> blocks);
 	~Field();
 
-	bool canPlayerMove(Direction d);
-	Block* getBlock(int x, int y);
-
 	void printField();
 
-	void swapPlayerAndBlock(Player p, Block b);
-
-	void setWinningState(FieldState winningState);
-
-
-
+	Block* getBlockAtPos(Position p);
 	void movePlayer(Direction d);
-
+	void moveTile(Tile t, Direction d);
+	
 private:
-	int width, height, numOfBlocks;
-	Player *p;
+	int width, heigth;
+	Player p;
 	std::vector<Block> blocks;
 
-	FieldState winningState;
+	bool canPlayerMove(Direction d);
+	bool canTileMove(Tile t, Direction d);
 };
 
 

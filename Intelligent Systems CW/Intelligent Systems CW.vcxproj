@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Direction.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldState.cpp" />
     <ClCompile Include="Intelligent Systems CW.cpp" />

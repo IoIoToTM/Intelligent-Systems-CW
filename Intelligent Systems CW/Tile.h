@@ -8,13 +8,9 @@ public:
 	Tile(int x, int y);
 	~Tile();
 
-	int getXPos();
-	int getYPos();
-
-	void setXPos(int x);
-	void setYPos(int y);
+	Position* getPosition();
 	void move(Direction d);
 private:
-	Position *pos;
+	Position pos;
 };
 

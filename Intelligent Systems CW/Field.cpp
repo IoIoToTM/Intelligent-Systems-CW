@@ -2,39 +2,41 @@
 #include "Field.h"
 
 
-
-
-
-
-
-Field::Field()
+Field::Field() :p(4,4)
 {
-
-	width = 4;
-	height = 4;
-	numOfBlocks = 3;
+	this->heigth = 4;
+	this->width = 4;
+	
+	
 }
+
 Field::Field(int width, int heigth, Player p, std::vector<Block> blocks)
 {
-	this->height = heigth;
+	this->heigth = heigth;
 	this->width = width;
-	this->p = &p;
+	this->p = p;
 	this->blocks = blocks;
 }
 
 
+
+Field::~Field()
+{
+}
+
 void Field::printField()
 {
-	for (int i = 1; i <= width; i++)
+
+	for (int i = 1; i <= heigth; i++)
 	{
-		for (int j = 1; j <= height; j++)
+		for (int j = 1; j <= width; j++)
 		{
-			Block* b = getBlock(i, j);
-			if (b != nullptr)
+			Block* temp = getBlockAtPos(Position(j,i));
+			if (temp != nullptr)
 			{
-				std::cout <<" "<<(*b).getName()<<" ";
+				std::cout << " " << temp->getName() << " ";
 			}
-			else if (p->getXPos() == i&&p->getYPos() == j)
+			else if (p.getPosition()->getX()==j && p.getPosition()->getY()==i)
 			{
 				std::cout << " p ";
 			}
@@ -44,73 +46,12 @@ void Field::printField()
 	}
 	std::cout << std::endl;
 }
-void Field::swapPlayerAndBlock(Player p, Block b)
-{
-	int tempX = p.getXPos();
-	int tempY = p.getYPos();
 
-	p.setXPos(b.getXPos());
-	p.setYPos(b.getYPos());
-
-	b.setXPos(tempX);
-	b.setYPos(tempY);
-	
-
-}
-
-void Field::setWinningState(FieldState winningState)
-{
-	this->winningState = winningState;
-}
-
-void Field::movePlayer(Direction d)
-{
-	if (canPlayerMove(d))
-	{
-		Block* b = getBlock(p->getXPos(), p->getYPos());
-		if(b!=nullptr)
-		{
-			swapPlayerAndBlock(*p, *b);
-		}
-		
-		else p->move(d);
-			
-	}
-	
-}
-
-
-bool Field::canPlayerMove(Direction d)
-{
-	int playerX = p->getXPos();
-	int playerY = p->getYPos();
-
-	if (playerX == width && d == RIGHT)
-	{
-		return false;
-	}
-	if (playerX == 1 && d == LEFT)
-	{
-		return false;
-	}
-	if (playerY == height && d == DOWN)
-	{
-		return false;
-	}
-	if (playerY == 1 && d == UP)
-	{
-		return false;
-	}
-
-	return true;
-	
-}
-
-Block* Field::getBlock(int x, int y)
+Block* Field::getBlockAtPos(Position p)
 {
 	for (std::vector<Block>::iterator it = blocks.begin(); it != blocks.end(); ++it)
 	{
-		if ((*it).getXPos() == x && (*it).getYPos() == y)
+		if ((*it).getPosition()->getX() == p.getX() && (*it).getPosition()->getY() == p.getY())
 		{
 			return &(*it);
 		}
@@ -118,7 +59,52 @@ Block* Field::getBlock(int x, int y)
 	return nullptr;
 }
 
-
-Field::~Field()
+void Field::movePlayer(Direction d)
 {
+	if (canPlayerMove(d))
+	{
+		p.move(d);
+
+		Position pos = *p.getPosition();
+
+		Block* b = getBlockAtPos(pos);
+		if (b != nullptr)
+		{
+			b->move(getOppositeDirection(d));
+		}
+
+	}
+
+}
+
+
+
+bool Field::canPlayerMove(Direction d)
+{
+	return canTileMove(p, d);
+}
+
+bool Field::canTileMove(Tile t, Direction d)
+{
+	int xPos = t.getPosition()->getX();
+	int yPos = t.getPosition()->getY();
+
+	if (d == UP && yPos == 1)
+	{
+		return false;
+	}
+	else if (d == DOWN && yPos == heigth)
+	{
+		return false;
+	}
+	else if (d == LEFT && xPos == 1)
+	{
+		return false;
+	}
+	else if (d == RIGHT && xPos == width)
+	{
+		return false;
+	}
+
+	return true;
 }

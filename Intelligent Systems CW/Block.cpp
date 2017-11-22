@@ -12,8 +12,9 @@ Block::Block(int x, int y,char name) : Tile(x, y)
 }
 
 
-Block::~Block()
+Block::~Block() 
 {
+	
 }
 
 char Block::getName()
