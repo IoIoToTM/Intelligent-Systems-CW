@@ -9,6 +9,7 @@ public:
 	~Tree();
 
 	FieldState* getState();
+	Tree* getParent();
 
 	void addChild(Tree* child);
 private:

@@ -106,6 +106,11 @@ FieldState Field::getFieldState()
 	return FieldState(p,blocks);
 }
 
+FieldState Field::getWinningState()
+{
+	return this->winningState;
+}
+
 int Field::getWidth() const
 {
 	return this->width;

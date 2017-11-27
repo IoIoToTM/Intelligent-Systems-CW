@@ -12,12 +12,32 @@
 #include<vector>
 #include<thread>
 #include<queue>
+#include<algorithm>
 
+
+std::vector<Direction> randomiseDirections()
+{
+	std::vector<Direction> directionVector;
+	directionVector.push_back(UP);
+	directionVector.push_back(DOWN);
+	directionVector.push_back(RIGHT);
+	directionVector.push_back(LEFT);
+
+	//srand(NULL);
+
+	std::random_shuffle(directionVector.begin(), directionVector.end());
+
+	return directionVector;
+
+
+}
 void doBFS(Field f)
 {
 	std::queue <Tree*> checkNodes;
 	Tree root(f.getFieldState());
 	Tree* rootPointer = &root;
+
+	FieldState winning = f.getWinningState();
 
 	int fieldHeigth = f.getHeigth();
 	int fieldWidth = f.getWidth();
@@ -31,13 +51,34 @@ void doBFS(Field f)
 		FieldState currentState = *nodeToExplore->getState();
 		checkNodes.pop();
 
-		for (int i = 0; i <4; i++)
+		//std::vector<Direction> directions = randomiseDirections();
+
+		for (int i = 0; i<4;i++)
 		{
 			Field temp(fieldWidth,fieldHeigth,currentState);
-			temp.movePlayer(static_cast<Direction> (i));
-			if (temp.isGoalReached()) 
+			
+			temp.movePlayer(static_cast<Direction>(i));
+
+			if (currentState == temp.getFieldState())
 			{
-				std::cout << "GOAL REACHED";
+				continue;
+			}
+
+			FieldState t1 = temp.getFieldState();
+			bool iswin = t1.checkIfOnlyBlocksInPlace(t1, winning);
+			if (iswin)
+			{
+				std::cout << "GOAL REACHED\n";
+
+				Tree* parent = nodeToExplore;
+				temp.printField();
+
+				while (parent != NULL)
+				{
+					Field t(fieldWidth, fieldHeigth, *parent->getState());
+					t.printField();
+					parent = parent->getParent();
+				}
 				return; 
 			}
 			Tree *child = new Tree(temp.getFieldState(), nodeToExplore);
@@ -130,11 +171,15 @@ int main()
 	winningBlocks.push_back(Block(Position(2, 2), 'A'));
 	winningBlocks.push_back(Block(Position(2, 3), 'B'));
 	winningBlocks.push_back(Block(Position(2, 4), 'C'));
+	/*winningBlocks.push_back(a);
+	winningBlocks.push_back(b);
+	winningBlocks.push_back(Block(Position(4,4),'C'));*/
+
 
 
 	std::cout << "Size of Tree " << sizeof(Tree)<<std::endl;
 
-	FieldState winning(Player(Position(4,4)), winningBlocks);
+	FieldState winning(Player(Position(1,1)), winningBlocks);
 
 	Field f(4, 4, p, blocks);
 	f.setWinningState(winning);
@@ -143,21 +188,23 @@ int main()
 	Field f1(4, 4, p, blocks);
 	f1.setWinningState(winning);
 
+	doBFS(f);
+
 	/*doDFS(f);
 	doDFSNoMemory(f1);*/
 
 
 	/*std::thread first (doDFS,f);
-	std::thread second(doDFSNoMemory,f1);
+	std::thread second(doBFS,f1);
 	
 	std::cout << "I AM CONCURRENT " << std::endl;
 
 	first.join();
-	second.join();*/
-
+	second.join();
+	*/
 
 	//doDFSNoMemory(f);
-	doBFS(f);
+	//doDFSNoMemory(f);
 
 	int x;
 	
@@ -173,8 +220,4 @@ int main()
 
 
 	std::cin >> x;
-
-
-	
-
 }

@@ -28,6 +28,7 @@ public:
 	bool isGoalReached();
 
 	FieldState getFieldState();
+	FieldState getWinningState();
 
 	int getWidth() const;
 	int getHeigth() const;

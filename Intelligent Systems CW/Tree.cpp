@@ -36,6 +36,11 @@ FieldState * Tree::getState()
 	return &state;
 }
 
+Tree * Tree::getParent()
+{
+	return parent;
+}
+
 void Tree::addChild(Tree * child)
 {
 	for (int i = 0; i < 4; i++)

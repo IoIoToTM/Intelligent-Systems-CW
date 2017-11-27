@@ -5,7 +5,7 @@
 
 enum Direction
 {
-	UP, DOWN, LEFT, RIGHT
+	UP, LEFT, DOWN, RIGHT
 };
 
 extern bool randomGenerated;
