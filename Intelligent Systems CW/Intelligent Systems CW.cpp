@@ -51,13 +51,13 @@ void doBFS(Field f)
 		FieldState currentState = *nodeToExplore->getState();
 		checkNodes.pop();
 
-		//std::vector<Direction> directions = randomiseDirections();
+		std::vector<Direction> directions = randomiseDirections();
 
-		for (int i = 0; i<4;i++)
+		for (std::vector<Direction>::iterator it = directions.begin();it!=directions.end();++it)
 		{
 			Field temp(fieldWidth,fieldHeigth,currentState);
 			
-			temp.movePlayer(static_cast<Direction>(i));
+			temp.movePlayer(*(it));
 
 			if (currentState == temp.getFieldState())
 			{
@@ -66,7 +66,7 @@ void doBFS(Field f)
 
 			FieldState t1 = temp.getFieldState();
 			bool iswin = t1.checkIfOnlyBlocksInPlace(t1, winning);
-			if (iswin)
+			if (t1==winning)
 			{
 				std::cout << "GOAL REACHED\n";
 
@@ -98,6 +98,47 @@ void doBFS(Field f)
 
 
 }
+bool DLS(Tree* start, Tree* goal, int limit)
+{
+	FieldState startState = *start->getState();
+	FieldState goalState = *goal->getState();
+	if (startState == goalState)
+	{
+		return true;
+	}
+
+	if (limit <= 0)
+	{
+		return false;
+	}
+
+	std::vector<Direction> directions = randomiseDirections();
+
+	for (std::vector<Direction>::iterator it = directions.begin(); it != directions.end(); ++it)
+	{
+
+		Field f(4, 4, startState);
+
+		f.movePlayer(*(it));
+
+		Tree* toCheck = new Tree(f.getFieldState());
+		if (DLS(toCheck, goal, --limit) == true)
+		{
+			return true;
+		}
+
+	}
+	return false;
+}
+
+bool doDLS(Field f,int depth)
+{
+	Tree* start = new Tree(f.getFieldState());
+	Tree* goal = new Tree(f.getWinningState());
+	return DLS(start, goal, depth);
+}
+
+
 
 void doDFS(Field f)
 {
@@ -188,7 +229,13 @@ int main()
 	Field f1(4, 4, p, blocks);
 	f1.setWinningState(winning);
 
-	doBFS(f);
+
+	if (doDLS(f, 20) == true)
+	{
+		std::cout << "WOW";
+	}
+	else std::cout << "no";
+	//doBFS(f);
 
 	/*doDFS(f);
 	doDFSNoMemory(f1);*/
