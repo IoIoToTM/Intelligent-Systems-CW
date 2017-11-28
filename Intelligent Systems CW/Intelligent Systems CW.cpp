@@ -13,184 +13,38 @@
 #include<thread>
 #include<queue>
 #include<algorithm>
+#include<stack>
 
 
-std::vector<Direction> randomiseDirections()
+#include"Algorithms.h"
+
+void freeMemory(Tree* root)
 {
-	std::vector<Direction> directionVector;
-	directionVector.push_back(UP);
-	directionVector.push_back(DOWN);
-	directionVector.push_back(RIGHT);
-	directionVector.push_back(LEFT);
+	std::stack <Tree*> checkNodes;
 
-	//srand(NULL);
+	checkNodes.push(root);
 
-	std::random_shuffle(directionVector.begin(), directionVector.end());
-
-	return directionVector;
-
-
-}
-void doBFS(Field f)
-{
-	std::queue <Tree*> checkNodes;
-	Tree root(f.getFieldState());
-	Tree* rootPointer = &root;
-
-	FieldState winning = f.getWinningState();
-
-	int fieldHeigth = f.getHeigth();
-	int fieldWidth = f.getWidth();
-	int moves = 0;
-
-	checkNodes.push(&root);
-
-	while (true)
+	while (!checkNodes.empty())
 	{
-		Tree* nodeToExplore = checkNodes.front();
-		FieldState currentState = *nodeToExplore->getState();
+		Tree* currentNode = checkNodes.top();
+		Tree* children[4];
+		for (int i = 0; i < 4; i++)
+		{
+			children[i] = currentNode->getChild(i);
+		}
 		checkNodes.pop();
 
-		std::vector<Direction> directions = randomiseDirections();
+		delete currentNode;
 
-		for (std::vector<Direction>::iterator it = directions.begin();it!=directions.end();++it)
+		for (int i = 0; i < 4; i++)
 		{
-			Field temp(fieldWidth,fieldHeigth,currentState);
-			
-			temp.movePlayer(*(it));
-
-			if (currentState == temp.getFieldState())
-			{
-				continue;
-			}
-
-			FieldState t1 = temp.getFieldState();
-			bool iswin = t1.checkIfOnlyBlocksInPlace(t1, winning);
-			if (t1==winning)
-			{
-				std::cout << "GOAL REACHED\n";
-
-				Tree* parent = nodeToExplore;
-				temp.printField();
-
-				while (parent != NULL)
-				{
-					Field t(fieldWidth, fieldHeigth, *parent->getState());
-					t.printField();
-					parent = parent->getParent();
-				}
-				return; 
-			}
-			Tree *child = new Tree(temp.getFieldState(), nodeToExplore);
-			nodeToExplore->addChild(child);
-			checkNodes.push(child);
+			checkNodes.push(children[i]);
 		}
-		moves++;
-
-		/*if (moves % 100 == 0)
-		{
-			std::cout << "";
-		}*/
-
-
 	}
 
-
-
-}
-bool DLS(Tree* start, Tree* goal, int limit)
-{
-	FieldState startState = *start->getState();
-	FieldState goalState = *goal->getState();
-	if (startState == goalState)
-	{
-		return true;
-	}
-
-	if (limit <= 0)
-	{
-		return false;
-	}
-
-	std::vector<Direction> directions = randomiseDirections();
-
-	for (std::vector<Direction>::iterator it = directions.begin(); it != directions.end(); ++it)
-	{
-
-		Field f(4, 4, startState);
-
-		f.movePlayer(*(it));
-
-		Tree* toCheck = new Tree(f.getFieldState());
-		if (DLS(toCheck, goal, --limit) == true)
-		{
-			return true;
-		}
-
-	}
-	return false;
-}
-
-bool doDLS(Field f,int depth)
-{
-	Tree* start = new Tree(f.getFieldState());
-	Tree* goal = new Tree(f.getWinningState());
-	return DLS(start, goal, depth);
 }
 
 
-
-void doDFS(Field f)
-{
-
-	Tree root(f.getFieldState());
-	Tree* rootPointer = &root;
-	
-
-	int fieldHeigth = f.getHeigth();
-	int fieldWidth = f.getWidth();
-	int moves = 0;
-	while(!f.isGoalReached())
-	{
-		
-		Direction randomDir = getRandomDirection();
-		
-
-		for (int i = 0; i <4; i++)
-		{
-			if (i == randomDir) continue;
-
-			Field temp(fieldWidth, fieldHeigth, f.getFieldState());
-			temp.movePlayer(static_cast<Direction> (i));
-			Tree *child = new Tree(temp.getFieldState(), rootPointer);
-			rootPointer->addChild(child);
-		}
-
-		f.movePlayer(randomDir);
-
-		Tree* child = new Tree(f.getFieldState() , rootPointer);
-
-		rootPointer->addChild(child);
-		rootPointer = child;
-
-		moves++;
-		//if (moves % 1000==0) f.printField();
-	}
-
-	f.printField();
-	std::cout << moves;
-}
-void doDFSNoMemory(Field f)
-{
-	int moves = 0;
-	while (!f.isGoalReached())
-	{
-		f.movePlayer(getRandomDirection());
-		moves++;
-	}
-	f.printField();
-	std::cout << moves;
-}
 
 
 int main()
@@ -209,9 +63,9 @@ int main()
 	blocks.push_back(c);
 
 	std::vector<Block> winningBlocks;
-	winningBlocks.push_back(Block(Position(2, 2), 'A'));
-	winningBlocks.push_back(Block(Position(2, 3), 'B'));
-	winningBlocks.push_back(Block(Position(2, 4), 'C'));
+	winningBlocks.push_back(Block(Position(2, 4), 'A'));
+	winningBlocks.push_back(Block(Position(3, 4), 'B'));
+	winningBlocks.push_back(Block(Position(4, 4), 'C'));
 	/*winningBlocks.push_back(a);
 	winningBlocks.push_back(b);
 	winningBlocks.push_back(Block(Position(4,4),'C'));*/
@@ -223,14 +77,35 @@ int main()
 	FieldState winning(Player(Position(1,1)), winningBlocks);
 
 	Field f(4, 4, p, blocks);
-	f.setWinningState(winning);
+	
 	f.printField();
 
-	Field f1(4, 4, p, blocks);
-	f1.setWinningState(winning);
+	Field f1(4, 4, p, winningBlocks);
+
+	Tree* result = doDFS(f, f1);
+	std::cout << std::endl;
+
+	while (result != nullptr)
+	{
+		result->getField()->printField();
+		result = result->getParent();
+	}
+
+	//std::cout << "\n"<< f.numOfMovesfromTwoTiles(*f.getBlockAtPos(Position(1,4)),*f.getBlockAtPos(Position(4,4)));
 
 
-	if (doDLS(f, 20) == true)
+	//std::cout << "\n" << f.getBlock('A').getPosition()->getY();
+	
+	//result->getField()->printField();
+	//std::cout << "\n" << f.calculateManhatanDistance(f1);
+
+
+	/*if (f == f1) {
+		std::cout << "yay";
+	}*/
+
+
+	/*if (doDLS(f, 20) == true)
 	{
 		std::cout << "WOW";
 	}

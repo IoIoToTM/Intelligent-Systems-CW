@@ -5,10 +5,12 @@
 
 
 
-Tree::Tree(FieldState state)
+
+Tree::Tree(Field field, Tree * parent, int depth)
 {
-	this->state = state;
-	this->parent = nullptr;
+	this->state = field;
+	this->parent = parent;
+	this->depth = depth;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -16,10 +18,12 @@ Tree::Tree(FieldState state)
 	}
 }
 
-Tree::Tree(FieldState state, Tree * parent)
+Tree::Tree(Field field, int depth)
 {
-	this->state = state;
-	this->parent = parent;
+	this->state = field;
+	this->depth = depth;
+
+	this->parent = nullptr;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -31,7 +35,17 @@ Tree::~Tree()
 {
 }
 
-FieldState * Tree::getState()
+int Tree::getDepth()
+{
+	return depth;
+}
+
+void Tree::incrementDepth()
+{
+	depth++;
+}
+
+Field * Tree::getField()
 {
 	return &state;
 }
@@ -52,3 +66,16 @@ void Tree::addChild(Tree * child)
 		}
 	}
 }
+
+Tree * Tree::getChild(int i)
+{
+	//TODO if >4
+	return children[i];
+}
+
+/*bool operator<(const Tree & left, const Tree & right)
+{
+	Field leftField = *left.getField();
+	return ;
+}*/
+  

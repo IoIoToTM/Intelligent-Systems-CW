@@ -26,6 +26,13 @@ Field::Field(int width, int heigth, FieldState state) :p(*state.getPlayerPos())
 	//this->p = state.getPlayerPos();
 }
 
+Field::Field(int width, int height, Field field) : p(*field.p.getPosition())
+{
+	this->heigth = height;
+	this->width = width;
+	this->blocks = field.blocks;
+}
+
 
 
 Field::~Field()
@@ -85,12 +92,73 @@ void Field::movePlayer(Direction d)
 
 }
 
-void Field::setWinningState(FieldState winningState)
+int Field::numOfMovesfromTwoTiles(Tile a, Tile b)
 {
-	this->winningState = winningState;
+	Position* tileA = (Position*) a.getPosition();
+	Position* tileB = (Position*) b.getPosition();
+
+	int distance = abs(tileB->getX() - tileA->getX()) + abs(tileB->getY() - tileA->getY());
+	return distance;
 }
 
-bool Field::isGoalReached()
+Block* Field::getBlock(char name)
+{
+	std::vector<Block>::iterator iter = blocks.begin();
+
+	for (; iter != blocks.end(); ++iter)
+	{
+		if ((*iter).getName() == name)
+		{
+			return &(*iter);
+		}
+	}
+
+	return nullptr;
+}
+
+int Field::calculateManhatanDistance(Field winningField)
+{
+	std::vector<Block> winningBlocks = winningField.blocks;
+
+	std::vector<Block>::iterator currentStateIter = blocks.begin();
+	int distance = 0;
+
+	for (; currentStateIter != blocks.end(); ++currentStateIter)
+	{
+		Block* winningBlock = winningField.getBlock((*currentStateIter).getName());
+
+		distance += numOfMovesfromTwoTiles((*currentStateIter), *winningBlock);
+	}
+
+	return distance;
+
+	/*
+	
+	
+	x x x x
+	x x x x
+	x x x x
+	A B C p
+
+	x x x x
+	x A x x
+	x B x x
+	x C x p
+	
+	
+	*/
+
+	return 0;
+}
+
+
+
+/*void Field::setWinningState(FieldState winningState)
+{
+	this->winningState = winningState;
+}*/
+
+/*bool Field::isGoalReached()
 {
 	FieldState stateOfFieldNow(p, blocks);
 
@@ -99,9 +167,9 @@ bool Field::isGoalReached()
 		return true;
 	}
 	return false;
-}
+}*/
 
-FieldState Field::getFieldState()
+/*FieldState Field::getFieldState()
 {
 	return FieldState(p,blocks);
 }
@@ -109,6 +177,11 @@ FieldState Field::getFieldState()
 FieldState Field::getWinningState()
 {
 	return this->winningState;
+}*/
+
+Position Field::getPlayerPos()
+{
+	return *p.getPosition();
 }
 
 int Field::getWidth() const
@@ -165,4 +238,39 @@ bool Field::checkIfBlocksAreTheSame(Block a, Block b)
 		}
 	}
 	return false;
+}
+
+bool operator==(const Field & left, const Field & right)
+{
+	std::vector <Block> leftBlocks = left.blocks;
+	std::vector <Block> rightBlocks = right.blocks;
+
+	std::vector<Block>::iterator leftIter = leftBlocks.begin();
+
+
+	if (leftBlocks.size() != rightBlocks.size())
+	{
+		return false;
+	}
+
+	/*if (!(*left.p.getPosition() == *right.p.getPosition()))
+	{
+		return false;
+	}*/
+
+	bool match = false;
+
+	for (; leftIter != leftBlocks.end(); ++leftIter)
+	{
+		for (std::vector<Block>::iterator rightIter = rightBlocks.begin(); rightIter != rightBlocks.end(); ++rightIter)
+		{
+			if (*leftIter == *rightIter)
+			{
+				match = true;
+			}
+		}
+		if (match == false) return false;
+		else match = false;
+	}
+	return true;
 }

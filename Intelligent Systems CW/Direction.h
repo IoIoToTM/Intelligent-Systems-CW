@@ -2,6 +2,7 @@
 
 #include<time.h>
 #include<stdlib.h>
+#include<vector>
 
 enum Direction
 {
@@ -12,3 +13,5 @@ extern bool randomGenerated;
 
 Direction getOppositeDirection(Direction d);
 Direction getRandomDirection();
+
+std::vector<Direction> randomiseDirections();

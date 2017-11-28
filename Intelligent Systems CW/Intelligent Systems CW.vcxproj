@@ -145,6 +145,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="Field.h" />

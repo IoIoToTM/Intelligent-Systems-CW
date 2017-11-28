@@ -17,18 +17,30 @@ public:
 	Field();
 	Field(int width, int heigth, Player p, std::vector <Block> blocks);
 	Field(int width, int heigth, FieldState state);
+	Field(int width, int height, Field field);
 	~Field();
+
+
+	friend bool operator==(const Field& left, const Field& right);
 
 	void printField();
 
 	Block* getBlockAtPos(Position p);
 	void movePlayer(Direction d);
-	void setWinningState(FieldState winningState);
 
-	bool isGoalReached();
+	int numOfMovesfromTwoTiles(Tile a, Tile b);
 
-	FieldState getFieldState();
-	FieldState getWinningState();
+	Block* getBlock(char name);
+
+	int calculateManhatanDistance(Field winningField);
+	//void setWinningState(FieldState winningState);
+
+	//bool isGoalReached();
+
+	/*FieldState getFieldState();
+	FieldState getWinningState();*/
+
+	Position getPlayerPos();
 
 	int getWidth() const;
 	int getHeigth() const;
@@ -37,7 +49,7 @@ private:
 	int width, heigth;
 	Player p;
 	std::vector<Block> blocks;
-	FieldState winningState;
+	//FieldState winningState;
 
 	bool canPlayerMove(Direction d);
 	bool canTileMove(Tile t, Direction d);
