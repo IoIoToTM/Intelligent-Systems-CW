@@ -23,9 +23,9 @@ public:
 
 	friend bool operator==(const Field& left, const Field& right);
 
-	void printField();
+	void printField() const;
 
-	Block* getBlockAtPos(Position p);
+	Block* getBlockAtPos(Position p) const;
 	void movePlayer(Direction d);
 
 	int numOfMovesfromTwoTiles(Tile a, Tile b);

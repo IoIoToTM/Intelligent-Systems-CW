@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="CostTree.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldState.h" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="CostTree.cpp" />
     <ClCompile Include="Direction.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldState.cpp" />

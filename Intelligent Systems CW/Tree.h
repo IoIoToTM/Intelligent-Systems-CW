@@ -7,7 +7,7 @@ public:
 	Tree(Field field,int depth=0);
 	Tree(Field field,Tree* parent, int depth=0);
 
-	friend bool operator<(const Tree& left, const Tree& right);
+	
 
 	~Tree();
 
@@ -15,14 +15,15 @@ public:
 
 	void incrementDepth();
 
-	Field* getField();
+	const Field* getField() const;
 	Tree* getParent();
 
 	void addChild(Tree* child);
-	Tree* getChild(int i);
+	std::vector<Tree*>::iterator getChildIteratorBegin();
+	std::vector<Tree*>::iterator getChildIteratorEnd();
 private:
 	//TODO vector of pointers
-	Tree* children[4];
+	std::vector<Tree*> children;
 	Tree* parent;
 	Field state;
 	int depth;

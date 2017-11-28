@@ -39,14 +39,14 @@ Field::~Field()
 {
 }
 
-void Field::printField()
+void Field::printField() const
 {
 
 	for (int i = 1; i <= heigth; i++)
 	{
 		for (int j = 1; j <= width; j++)
 		{
-			Block* temp = getBlockAtPos(Position(j,i));
+			Block* temp =  getBlockAtPos(Position(j,i));
 			if (temp != nullptr)
 			{
 				std::cout << " " << temp->getName() << " ";
@@ -62,13 +62,13 @@ void Field::printField()
 	std::cout << std::endl;
 }
 
-Block* Field::getBlockAtPos(Position p)
+Block* Field::getBlockAtPos(Position p) const
 {
-	for (std::vector<Block>::iterator it = blocks.begin(); it != blocks.end(); ++it)
+	for (std::vector<Block>::const_iterator it = blocks.begin(); it != blocks.end(); ++it)
 	{
 		if ((*it).getPosition()->getX() == p.getX() && (*it).getPosition()->getY() == p.getY())
 		{
-			return &(*it);
+			return (Block*)&(*it);
 		}
 	}
 	return nullptr;

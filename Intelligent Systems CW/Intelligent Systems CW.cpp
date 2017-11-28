@@ -18,31 +18,7 @@
 
 #include"Algorithms.h"
 
-void freeMemory(Tree* root)
-{
-	std::stack <Tree*> checkNodes;
 
-	checkNodes.push(root);
-
-	while (!checkNodes.empty())
-	{
-		Tree* currentNode = checkNodes.top();
-		Tree* children[4];
-		for (int i = 0; i < 4; i++)
-		{
-			children[i] = currentNode->getChild(i);
-		}
-		checkNodes.pop();
-
-		delete currentNode;
-
-		for (int i = 0; i < 4; i++)
-		{
-			checkNodes.push(children[i]);
-		}
-	}
-
-}
 
 
 
@@ -63,7 +39,7 @@ int main()
 	blocks.push_back(c);
 
 	std::vector<Block> winningBlocks;
-	winningBlocks.push_back(Block(Position(2, 4), 'A'));
+	winningBlocks.push_back(Block(Position(2, 2), 'A'));
 	winningBlocks.push_back(Block(Position(3, 4), 'B'));
 	winningBlocks.push_back(Block(Position(4, 4), 'C'));
 	/*winningBlocks.push_back(a);
@@ -82,7 +58,7 @@ int main()
 
 	Field f1(4, 4, p, winningBlocks);
 
-	Tree* result = doDFS(f, f1);
+	Tree* result = doAStar(f, f1);
 	std::cout << std::endl;
 
 	while (result != nullptr)
@@ -90,6 +66,11 @@ int main()
 		result->getField()->printField();
 		result = result->getParent();
 	}
+
+	/*CostTree testing(f, 1);
+	CostTree testing2(f, 2);
+
+	if (testing < testing2) std::cout << "yay it is";*/
 
 	//std::cout << "\n"<< f.numOfMovesfromTwoTiles(*f.getBlockAtPos(Position(1,4)),*f.getBlockAtPos(Position(4,4)));
 
@@ -142,4 +123,6 @@ int main()
 
 
 	std::cin >> x;
+
+	return 0;
 }
