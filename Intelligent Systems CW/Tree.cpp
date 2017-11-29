@@ -6,14 +6,20 @@
 
 
 
-Tree::Tree(Field field, Tree * parent, int depth)
+Tree::Tree(Field* field, Tree * parent, int depth)
 {
 	this->state = field;
 	this->parent = parent;
 	this->depth = depth;
 }
 
-Tree::Tree(Field field, int depth)
+Tree::Tree() :state()
+{
+	parent = nullptr;
+	depth = 0;
+}
+
+Tree::Tree(Field* field, int depth)
 {
 	this->state = field;
 	this->depth = depth;
@@ -37,7 +43,7 @@ void Tree::incrementDepth()
 
 const Field* Tree::getField() const
 {
-	return &state;
+	return state;
 }
 
 Tree * Tree::getParent()

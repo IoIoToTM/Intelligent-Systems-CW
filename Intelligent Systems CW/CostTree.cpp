@@ -5,12 +5,12 @@
 
 
 
-CostTree::CostTree(Field field,int cost, int depth):Tree(field,depth)
+CostTree::CostTree(Field* field,int cost, int depth):Tree(field,depth)
 {
 	this->cost = cost;
 }
 
-CostTree::CostTree(Field field, Tree * parent,int cost, int depth):Tree(field,parent,depth)
+CostTree::CostTree(Field* field, Tree * parent,int cost, int depth):Tree(field,parent,depth)
 {
 	this->cost = cost;
 }

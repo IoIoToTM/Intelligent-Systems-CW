@@ -40,8 +40,8 @@ int main()
 
 	std::vector<Block> winningBlocks;
 	winningBlocks.push_back(Block(Position(2, 2), 'A'));
-	winningBlocks.push_back(Block(Position(3, 4), 'B'));
-	winningBlocks.push_back(Block(Position(4, 4), 'C'));
+	winningBlocks.push_back(Block(Position(2, 3), 'B'));
+	winningBlocks.push_back(Block(Position(2, 4), 'C'));
 	/*winningBlocks.push_back(a);
 	winningBlocks.push_back(b);
 	winningBlocks.push_back(Block(Position(4,4),'C'));*/
@@ -58,7 +58,7 @@ int main()
 
 	Field f1(4, 4, p, winningBlocks);
 
-	Tree* result = doAStar(f, f1);
+	Tree* result = doDLS(f, f1,10);
 	std::cout << std::endl;
 
 	while (result != nullptr)

@@ -94,11 +94,11 @@ void Field::movePlayer(Direction d)
 
 int Field::numOfMovesfromTwoTiles(Tile a, Tile b)
 {
-	Position* tileA = (Position*) a.getPosition();
-	Position* tileB = (Position*) b.getPosition();
+	const Position* tileA =  a.getPosition();
+	const Position* tileB =  b.getPosition();
 
-	int distance = abs(tileB->getX() - tileA->getX()) + abs(tileB->getY() - tileA->getY());
-	return distance;
+	return abs(tileB->getX() - tileA->getX()) + abs(tileB->getY() - tileA->getY());
+	
 }
 
 Block* Field::getBlock(char name)

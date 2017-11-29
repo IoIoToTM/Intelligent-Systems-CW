@@ -4,8 +4,9 @@
 class Tree
 {
 public:
-	Tree(Field field,int depth=0);
-	Tree(Field field,Tree* parent, int depth=0);
+	Tree();
+	Tree(Field* field,int depth=0);
+	Tree(Field* field,Tree* parent, int depth=0);
 
 	
 
@@ -25,7 +26,7 @@ private:
 	//TODO vector of pointers
 	std::vector<Tree*> children;
 	Tree* parent;
-	Field state;
+	Field* state;
 	int depth;
 	
 	

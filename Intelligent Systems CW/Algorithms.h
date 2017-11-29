@@ -5,6 +5,7 @@
 
 #include<queue>
 #include<stack>
+#include<time.h>
 
 
 void freeMemory(Tree* root)
@@ -56,7 +57,7 @@ void freeMemory(Tree* root)
 Tree* doBFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame = false)
 {
 	std::queue <Tree*> checkNodes;
-	Tree* root = new Tree(startField);
+	Tree* root = new Tree(&startField);
 	Tree* rootPointer = root;
 
 	int fieldHeigth = startField.getHeigth();
@@ -64,6 +65,12 @@ Tree* doBFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame = fal
 	int moves = 0;
 
 	checkNodes.push(root);
+
+	int sizeOfChunk = 1000000;
+
+	char* buf = new char[sizeof(Tree) * sizeOfChunk];
+
+	int currentchunk = 0;
 
 	while (!checkNodes.empty())
 	{
@@ -99,7 +106,11 @@ Tree* doBFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame = fal
 
 			int parentDepth = nodeToExplore->getDepth();
 			temp.movePlayer(*(it));
-			Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+			if (currentchunk == sizeOfChunk) return nullptr;
+			char* buf_local = buf + (sizeof(Tree)*currentchunk);
+			Tree* child = new (buf_local) Tree(&temp, nodeToExplore, ++parentDepth);
+			currentchunk++;
+			//Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
 			nodeToExplore->addChild(child);
 			checkNodes.push(child);
 		}
@@ -154,7 +165,7 @@ Tree* doBFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame = fal
 Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosIsSame = false)
 {
 	std::stack <Tree*> checkNodes;
-	Tree* root = new Tree(startField);
+	Tree* root = new Tree(&startField);
 	Tree* rootPointer = root;
 
 	int fieldHeigth = goalField.getHeigth();
@@ -163,10 +174,28 @@ Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosI
 
 	checkNodes.push(root);
 
+	int sizeOfChunk = 10000000;
+
+	char* buf = new char[sizeof(Tree) * sizeOfChunk];
+
+	int currentchunk = 0;
+
+	time_t start = time(0);
+	int numOfNodesExpanded = 0;
+
 	while (!checkNodes.empty())
 	{
 		Tree* nodeToExplore = checkNodes.top();
 		Field currentField = *nodeToExplore->getField();
+
+		if (difftime(time(0), start) >= 1)
+		{
+			std::cout << "Num of nodes expanded for 1 second " << numOfNodesExpanded << "\n";
+			numOfNodesExpanded = 0;
+			//nodeToExplore->getField()->printField();
+			start = time(0);
+		}
+
 
 		if (currentField == goalField)
 		{
@@ -199,19 +228,31 @@ Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosI
 		}
 		for (int i = 0; i<4; i++)
 		{
-			Field temp(fieldWidth, fieldHeigth, currentField);
+			Field* temp = new Field(fieldWidth, fieldHeigth, currentField);
 			parentDepth = nodeToExplore->getDepth();
 			if (i == randomDir) continue;
-			temp.movePlayer(static_cast<Direction> (i));
-			Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+			temp->movePlayer(static_cast<Direction> (i));
+
+			char* buf_local = buf + (sizeof(Tree)*currentchunk);
+			Tree* child = new (buf_local) Tree(temp, nodeToExplore, ++parentDepth);
+			currentchunk++;
+
+			//Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+			numOfNodesExpanded++;
 			nodeToExplore->addChild(child);
 			checkNodes.push(child);
 		}
 
-		Field temp(fieldWidth, fieldHeigth, currentField);
+		Field* temp = new Field(fieldWidth, fieldHeigth, currentField);
 		parentDepth = nodeToExplore->getDepth();
-		temp.movePlayer(randomDir);
-		Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+		temp->movePlayer(randomDir);
+		
+		char* buf_local = buf + (sizeof(Tree)*currentchunk);
+		Tree* child = new (buf_local) Tree(temp, nodeToExplore, ++parentDepth);
+		currentchunk++;
+		
+		//Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+		numOfNodesExpanded++;
 		nodeToExplore->addChild(child);
 		checkNodes.push(child);
 
@@ -225,6 +266,7 @@ Tree* doIDS(Field startField, Field goalField, bool checkIfPlayerPosIsSame = fal
 {
 	for (int i = 0;; i++)
 	{
+		std::cout << "Searching level " << i << "\n";
 		Tree* answer = doDLS(startField, goalField, i, checkIfPlayerPosIsSame);
 		if (answer != nullptr)
 		{
@@ -237,55 +279,6 @@ Tree* doDFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame = fal
 {
 	return doDLS(startField, goalField, -1);
 }
-/*
-Tree root(f);
-Tree* rootPointer = &root;
-
-
-int fieldHeigth = f.getHeigth();
-int fieldWidth = f.getWidth();
-int moves = 0;
-while(!f.isGoalReached())
-{
-
-Direction randomDir = getRandomDirection();
-
-
-for (int i = 0; i <4; i++)
-{
-if (i == randomDir) continue;
-
-Field temp(fieldWidth, fieldHeigth, f.getFieldState());
-temp.movePlayer(static_cast<Direction> (i));
-Tree *child = new Tree(temp.getFieldState(), rootPointer);
-rootPointer->addChild(child);
-}
-
-f.movePlayer(randomDir);
-
-Tree* child = new Tree(f.getFieldState() , rootPointer);
-
-rootPointer->addChild(child);
-rootPointer = child;
-
-moves++;
-//if (moves % 1000==0) f.printField();
-}
-
-f.printField();
-std::cout << moves;*/
-/*
-void doDFSNoMemory(Field f)
-{
-int moves = 0;
-while (!f.isGoalReached())
-{
-f.movePlayer(getRandomDirection());
-moves++;
-}
-f.printField();
-std::cout << moves;
-}*/
 
 struct node_comparison
 {
@@ -299,7 +292,7 @@ Tree* doAStar(Field startField, Field goal,bool checkIfPlayerPosIsSame = false)
 {
 	std::priority_queue<CostTree*,std::vector<CostTree*>, node_comparison> queue;
 
-	CostTree* root = new CostTree(startField,startField.calculateManhatanDistance(goal));
+	CostTree* root = new CostTree(&startField,startField.calculateManhatanDistance(goal));
 	CostTree* rootPointer = root;
 
 	int fieldHeigth = goal.getHeigth();
@@ -308,10 +301,21 @@ Tree* doAStar(Field startField, Field goal,bool checkIfPlayerPosIsSame = false)
 
 	queue.push(root);
 
+	time_t start = time(0);
+	int numOfNodesExpanded = 0;
+
 	while (!queue.empty())
 	{
 		CostTree* nodeToExplore = queue.top();
 		Field currentField = *nodeToExplore->getField();
+
+		if (difftime(time(0), start) >= 1)
+		{
+			std::cout << "Num of nodes expanded for 1 second " << numOfNodesExpanded << "\n";
+			numOfNodesExpanded = 0;
+			//nodeToExplore->getField()->printField();
+			start = time(0);
+		}
 
 		if (currentField == goal)
 		{
@@ -324,6 +328,7 @@ Tree* doAStar(Field startField, Field goal,bool checkIfPlayerPosIsSame = false)
 			}
 			else
 			{
+				std::cout << numOfNodesExpanded << "\n";
 				return nodeToExplore;
 			}
 		}
@@ -338,76 +343,11 @@ Tree* doAStar(Field startField, Field goal,bool checkIfPlayerPosIsSame = false)
 
 			int parentDepth = nodeToExplore->getDepth();
 			temp.movePlayer(*(it));
-			CostTree *child = new CostTree(temp, nodeToExplore,nodeToExplore->getDepth()+temp.calculateManhatanDistance(goal), ++parentDepth);
+			CostTree *child = new CostTree(&temp, nodeToExplore,parentDepth+temp.calculateManhatanDistance(goal), ++parentDepth);
+			numOfNodesExpanded++;
 			nodeToExplore->addChild(child);
 			queue.push(child);
 		}
-
-		/*Tree* nodeToExplore = checkNodes.front();
-		Field currentField = *nodeToExplore->getField();
-
-		if (currentField == goalField)
-		{
-			if (checkIfPlayerPosIsSame)
-			{
-				if (currentField.getPlayerPos() == goalField.getPlayerPos())
-				{
-					std::cout << "yay";
-					return nodeToExplore;
-				}
-			}
-			else
-			{
-				std::cout << "yay22 " << nodeToExplore->getDepth();
-				//freeMemory(rootPointer);
-				return nodeToExplore;
-			}
-		}
-		checkNodes.pop();
-
-
-
-		std::vector<Direction> directions = randomiseDirections();
-
-		for (std::vector<Direction>::iterator it = directions.begin(); it != directions.end(); ++it)
-		{
-			Field temp(fieldWidth, fieldHeigth, currentField);
-
-			int parentDepth = nodeToExplore->getDepth();
-			temp.movePlayer(*(it));
-			Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
-			nodeToExplore->addChild(child);
-			checkNodes.push(child);
-		}*/
 	}
-
-
-	/*std::vector<Block> startingBlocks;
-	startingBlocks.push_back(Block(Position(1, 4), 'A'));
-	startingBlocks.push_back(Block(Position(2, 4), 'B'));
-	startingBlocks.push_back(Block(Position(3, 4), 'C'));
-
-	std::vector<Block> winningBlocks;
-	winningBlocks.push_back(Block(Position(2, 4), 'A'));
-	winningBlocks.push_back(Block(Position(3, 4), 'B'));
-	winningBlocks.push_back(Block(Position(4, 4), 'C'));
-
-	Field f(4, 4, Player(Position(4, 4)), startingBlocks);
-
-	Field w(4, 4, Player(Position(1, 1)), winningBlocks);
-
-	CostTree* temp= new CostTree(f, f.calculateManhatanDistance(w));
-
-	CostTree* temp2 = new CostTree(w, w.calculateManhatanDistance(w));
-
-	queue.push(temp);
-	queue.push(temp2);
-
-	CostTree* x = queue.top();
-	queue.pop();
-	*/
-
 	return nullptr;
-
-
 }
