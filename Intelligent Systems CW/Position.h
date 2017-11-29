@@ -7,8 +7,8 @@ public:
 	Position();
 	~Position();
 
+	//overloading the == operator so I can check between two positions
 	friend bool operator==(const Position& left, const Position& right);
-
 
 	int getX() const;
 	int getY() const;

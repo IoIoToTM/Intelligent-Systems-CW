@@ -1,6 +1,8 @@
 #pragma once
 #include"Direction.h"
 #include"Position.h"
+
+//the simplest unit in the field, a tile
 class Tile
 {
 public:

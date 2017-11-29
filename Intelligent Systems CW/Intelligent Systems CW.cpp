@@ -39,7 +39,7 @@ int main()
 	blocks.push_back(c);
 
 	std::vector<Block> winningBlocks;
-	winningBlocks.push_back(Block(Position(2, 2), 'A'));
+	winningBlocks.push_back(Block(Position(2, 3), 'A'));
 	winningBlocks.push_back(Block(Position(3, 4), 'B'));
 	winningBlocks.push_back(Block(Position(4, 4), 'C'));
 	/*winningBlocks.push_back(a);
@@ -50,7 +50,7 @@ int main()
 
 	std::cout << "Size of Tree " << sizeof(Tree)<<std::endl;
 
-	FieldState winning(Player(Position(1,1)), winningBlocks);
+	
 
 	Field f(4, 4, p, blocks);
 	
@@ -61,67 +61,9 @@ int main()
 	Tree* result = doAStar(f, f1);
 	std::cout << std::endl;
 
-	while (result != nullptr)
-	{
-		result->getField()->printField();
-		result = result->getParent();
-	}
-
-	/*CostTree testing(f, 1);
-	CostTree testing2(f, 2);
-
-	if (testing < testing2) std::cout << "yay it is";*/
-
-	//std::cout << "\n"<< f.numOfMovesfromTwoTiles(*f.getBlockAtPos(Position(1,4)),*f.getBlockAtPos(Position(4,4)));
-
-
-	//std::cout << "\n" << f.getBlock('A').getPosition()->getY();
-	
-	//result->getField()->printField();
-	//std::cout << "\n" << f.calculateManhatanDistance(f1);
-
-
-	/*if (f == f1) {
-		std::cout << "yay";
-	}*/
-
-
-	/*if (doDLS(f, 20) == true)
-	{
-		std::cout << "WOW";
-	}
-	else std::cout << "no";
-	//doBFS(f);
-
-	/*doDFS(f);
-	doDFSNoMemory(f1);*/
-
-
-	/*std::thread first (doDFS,f);
-	std::thread second(doBFS,f1);
-	
-	std::cout << "I AM CONCURRENT " << std::endl;
-
-	first.join();
-	second.join();
-	*/
-
-	//doDFSNoMemory(f);
-	//doDFSNoMemory(f);
+	printPathFromLeafToRoot(result);
 
 	int x;
-	
-	//f.movePlayer(getRandomDirection());
-	/*f.movePlayer(UP);
-	f.movePlayer(RIGHT);
-	f.movePlayer(RIGHT);
-	f.movePlayer(RIGHT);
-	f.movePlayer(UP);
-	//f.movePlayer(DOWN);
-	*/
-	//f.printField();
-
-
 	std::cin >> x;
 
 	return 0;

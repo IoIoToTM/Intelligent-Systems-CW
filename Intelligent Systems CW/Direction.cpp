@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Direction.h"
 
-
 #include<algorithm>
+
+bool randomGenerated = false;
 
 Direction getOppositeDirection(Direction d)
 {
@@ -24,7 +25,7 @@ Direction getOppositeDirection(Direction d)
 		break;
 	}
 }
-bool randomGenerated = false;
+
 
 Direction getRandomDirection()
 {
@@ -39,7 +40,6 @@ Direction getRandomDirection()
 	else if (i == 2) return DOWN;
 	else if (i == 3) return LEFT;
 	else if (i == 4) return RIGHT;
-
 }
 
 std::vector<Direction> randomiseDirections()
@@ -50,8 +50,7 @@ std::vector<Direction> randomiseDirections()
 	directionVector.push_back(RIGHT);
 	directionVector.push_back(LEFT);
 
-	//srand(NULL);
-
+	//using an STL function to shuffle a vector
 	std::random_shuffle(directionVector.begin(), directionVector.end());
 
 	return directionVector;

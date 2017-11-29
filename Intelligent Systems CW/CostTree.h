@@ -1,5 +1,7 @@
 #pragma once
 #include "Tree.h"
+
+//tree with an added cost of the node
 class CostTree :
 	public Tree
 {

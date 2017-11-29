@@ -12,6 +12,7 @@ Block::Block(Position pos,char name) : Tile(pos)
 }
 
 
+//if name and position are the same, return true
 bool operator==(const Block& left, const Block& right) 
 {
 	

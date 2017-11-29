@@ -1,5 +1,7 @@
 #pragma once
 #include "Tile.h"
+
+//block is just a tile with an overloaded == operator and a name
 class Block :
 	public Tile
 {

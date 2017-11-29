@@ -56,14 +56,10 @@ void Tree::addChild(Tree * child)
 
 std::vector<Tree*>::iterator Tree::getChildIteratorBegin()
 {
-	
-	//TODO if >4
 	return children.begin();
 }
 std::vector<Tree*>::iterator Tree::getChildIteratorEnd()
 {
-
-	//TODO if >4
 	return children.end();
 }
 

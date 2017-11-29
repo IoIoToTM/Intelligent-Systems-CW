@@ -6,8 +6,6 @@ Field::Field() :p(Position(4,4))
 {
 	this->heigth = 4;
 	this->width = 4;
-	
-	
 }
 
 Field::Field(int width, int heigth, Player p, std::vector<Block> blocks)
@@ -18,14 +16,6 @@ Field::Field(int width, int heigth, Player p, std::vector<Block> blocks)
 	this->blocks = blocks;
 }
 
-Field::Field(int width, int heigth, FieldState state) :p(*state.getPlayerPos())
-{
-	this->heigth = heigth;
-	this->width = width;
-	this->blocks = state.getBlocks();
-	//this->p = state.getPlayerPos();
-}
-
 Field::Field(int width, int height, Field field) : p(*field.p.getPosition())
 {
 	this->heigth = height;
@@ -34,14 +24,12 @@ Field::Field(int width, int height, Field field) : p(*field.p.getPosition())
 }
 
 
-
 Field::~Field()
 {
 }
 
 void Field::printField() const
 {
-
 	for (int i = 1; i <= heigth; i++)
 	{
 		for (int j = 1; j <= width; j++)
@@ -64,6 +52,8 @@ void Field::printField() const
 
 Block* Field::getBlockAtPos(Position p) const
 {
+
+	//going trhough the blocks and if the position is the same return it
 	for (std::vector<Block>::const_iterator it = blocks.begin(); it != blocks.end(); ++it)
 	{
 		if ((*it).getPosition()->getX() == p.getX() && (*it).getPosition()->getY() == p.getY())
@@ -76,12 +66,14 @@ Block* Field::getBlockAtPos(Position p) const
 
 void Field::movePlayer(Direction d)
 {
+	//check if player can move before moving
 	if (canPlayerMove(d))
 	{
 		p.move(d);
 
 		Position pos = *p.getPosition();
 
+		//get the block at the player position after moving him, if there is one, move it the opposite direction
 		Block* b = getBlockAtPos(pos);
 		if (b != nullptr)
 		{
@@ -92,7 +84,8 @@ void Field::movePlayer(Direction d)
 
 }
 
-int Field::numOfMovesfromTwoTiles(Tile a, Tile b)
+//simple calculation to get the distance between two tiles
+int Field::distanceBetweenTwoTiles(Tile a, Tile b)
 {
 	Position* tileA = (Position*) a.getPosition();
 	Position* tileB = (Position*) b.getPosition();
@@ -116,7 +109,8 @@ Block* Field::getBlock(char name)
 	return nullptr;
 }
 
-int Field::calculateManhatanDistance(Field winningField)
+//calculating Manhattan distance
+int Field::calculateManhattanDistance(Field winningField)
 {
 	std::vector<Block> winningBlocks = winningField.blocks;
 
@@ -127,57 +121,13 @@ int Field::calculateManhatanDistance(Field winningField)
 	{
 		Block* winningBlock = winningField.getBlock((*currentStateIter).getName());
 
-		distance += numOfMovesfromTwoTiles((*currentStateIter), *winningBlock);
+		distance += distanceBetweenTwoTiles((*currentStateIter), *winningBlock);
 	}
 
 	return distance;
-
-	/*
-	
-	
-	x x x x
-	x x x x
-	x x x x
-	A B C p
-
-	x x x x
-	x A x x
-	x B x x
-	x C x p
-	
-	
-	*/
-
-	return 0;
 }
 
 
-
-/*void Field::setWinningState(FieldState winningState)
-{
-	this->winningState = winningState;
-}*/
-
-/*bool Field::isGoalReached()
-{
-	FieldState stateOfFieldNow(p, blocks);
-
-	if (stateOfFieldNow == winningState)
-	{
-		return true;
-	}
-	return false;
-}*/
-
-/*FieldState Field::getFieldState()
-{
-	return FieldState(p,blocks);
-}
-
-FieldState Field::getWinningState()
-{
-	return this->winningState;
-}*/
 
 Position Field::getPlayerPos()
 {
@@ -252,11 +202,6 @@ bool operator==(const Field & left, const Field & right)
 	{
 		return false;
 	}
-
-	/*if (!(*left.p.getPosition() == *right.p.getPosition()))
-	{
-		return false;
-	}*/
 
 	bool match = false;
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "Field.h"
 
+
+//a tree has a field state, a parent tree, and a vector of children (in theory can be any number between 0 to infinity), but there's a check if I starts adding more than 4
 class Tree
 {
 public:
@@ -22,7 +24,6 @@ public:
 	std::vector<Tree*>::iterator getChildIteratorBegin();
 	std::vector<Tree*>::iterator getChildIteratorEnd();
 private:
-	//TODO vector of pointers
 	std::vector<Tree*> children;
 	Tree* parent;
 	Field state;
