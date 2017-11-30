@@ -3,6 +3,34 @@
 #include "Algorithms.h"
 
 
+
+int nodesExpanded = 1;
+int numberOfMoves = 0;
+int IDSnodesExpanded = 1;
+
+
+//counting the number of nodes from a given root
+int getNumOfNodesInTree(Tree * root)
+{
+	int count = 1;
+
+	if (root == nullptr)
+	{
+		return count;
+	}
+
+	std::vector<Tree*>::iterator temp = root->getChildIteratorBegin();
+	std::vector<Tree*>::iterator temp1 = root->getChildIteratorEnd();
+
+	for (; temp != temp1; ++temp)
+	{
+		count += getNumOfNodesInTree(*temp);
+	}
+
+	return count;
+
+}
+
 //memory deallocation using DFS recursive tree search
 void freeMemory(Tree* root)
 {
@@ -29,16 +57,93 @@ void freeMemory(Tree* root)
 
 void printPathFromLeafToRoot(Tree* leaf)
 {
+	numberOfMoves = 0;
 	while (leaf != nullptr)
 	{
 		leaf->getField()->printField();
 		leaf = leaf->getParent();
+		++numberOfMoves;
 	}
+	numberOfMoves--;
 }
+
+
 
 
 Tree* doBFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame)
 {
+
+	nodesExpanded = 1;
+
+	//for a BFS we use a queue
+	std::queue <Tree*> checkNodes;
+
+	//the first pointer to the root
+	Tree* root = new Tree(startField);
+	Tree* rootPointer = root;
+
+	//local variables for the height and width of the field
+	int fieldHeigth = startField.getHeigth();
+	int fieldWidth = goalField.getWidth();
+	int moves = 0;
+	
+
+	//push the first node and start checking
+	checkNodes.push(root);
+
+	while (!checkNodes.empty())
+	{
+		//get the next node in the queue and get its field
+		Tree* nodeToExplore = checkNodes.front();
+		Field currentField = *nodeToExplore->getField();
+
+		//if it's the goal state, return the node
+		if (currentField == goalField)
+		{
+			if (checkIfPlayerPosIsSame)
+			{
+				if (currentField.getPlayerPos() == goalField.getPlayerPos())
+				{
+					return nodeToExplore;
+				}
+			}
+			else
+			{
+				return nodeToExplore;
+			}
+		}
+
+		//pop the node
+		checkNodes.pop();
+
+
+		//go through each direction
+		for (int i = 0;i<4;i++)
+		{
+			//create a temporary field with the current state
+			Field temp(fieldWidth, fieldHeigth, currentField);
+			//move the player a direction
+			temp.movePlayer(static_cast<Direction>(i));
+			
+			//get the depth of the parent
+			int parentDepth = nodeToExplore->getDepth();
+
+			//create a new node in the heap and add the child to the current node and push it in the queue
+			Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+			nodesExpanded++;
+			nodeToExplore->addChild(child);
+			checkNodes.push(child);
+		}
+	}
+
+	return nullptr;
+}
+
+Tree * doBFSGraph(Field startField, Field goalField, bool checkIfPlayerPosIsSame)
+{
+
+	nodesExpanded = 1;
+
 	//for a BFS we use a queue
 	std::queue <Tree*> checkNodes;
 
@@ -84,7 +189,7 @@ Tree* doBFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame)
 
 		//randomising directions in which we expand, should't not make a difference 
 		//if we don't because BFS checks all nodes on a current depth before continuing
-		
+
 		std::vector<Direction> directions = randomiseDirections();
 
 		//go through each direction
@@ -94,12 +199,19 @@ Tree* doBFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame)
 			Field temp(fieldWidth, fieldHeigth, currentField);
 			//move the player a direction
 			temp.movePlayer(*(it));
-			
+
+
+			if ((temp == (Field)*nodeToExplore->getField())&&temp.getPlayerPos()==nodeToExplore->getField()->getPlayerPos())
+			{
+				//std::cout << "Testing \n";
+				continue;
+			}
 			//get the depth of the parent
 			int parentDepth = nodeToExplore->getDepth();
 
 			//create a new node in the heap and add the child to the current node and push it in the queue
 			Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+			nodesExpanded++;
 			nodeToExplore->addChild(child);
 			checkNodes.push(child);
 		}
@@ -112,6 +224,7 @@ Tree* doBFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame)
 Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosIsSame)
 {
 
+
 	/*
 	from what I did I noticed that DLS and DFS are essentially the same algorithm, the only difference is that DLS stops at a limit
 	while DFS stops at the bottom, which we don't have in this case
@@ -121,6 +234,9 @@ Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosI
 	
 	//the only difference between DFS and BFS in their non-recursive versions is that DFS uses a stack while BFS uses a queue
 	//in theory we could even make the code better if we have a few functions and depending on what we call we use a stack or queue, so we don't duplicate code
+
+	nodesExpanded = 1;
+
 	std::stack <Tree*> checkNodes;
 	Tree* root = new Tree(startField);
 	Tree* rootPointer = root;
@@ -181,6 +297,7 @@ Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosI
 
 			//create a new node on the heap and add it to the children of the parent
 			Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+			nodesExpanded++;
 			nodeToExplore->addChild(child);
 			checkNodes.push(child);
 		}
@@ -190,6 +307,110 @@ Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosI
 		parentDepth = nodeToExplore->getDepth();
 		temp.movePlayer(randomDir);
 		Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+		nodesExpanded++;
+		nodeToExplore->addChild(child);
+		checkNodes.push(child);
+
+	}
+
+	//free the memory in case it's DLS
+	freeMemory(rootPointer);
+	return nullptr;
+}
+
+Tree* doDLSWithGraph(Field startField, Field goalField, int limit, bool checkIfPlayerPosIsSame)
+{
+
+
+	/*
+	from what I did I noticed that DLS and DFS are essentially the same algorithm, the only difference is that DLS stops at a limit
+	while DFS stops at the bottom, which we don't have in this case
+	so I just added a check, if we pass it a depth of -1, then it never stops at a depth, and continues just like DFS, but any other positive limit and
+	it will stop expanding once it's reached that limit
+	*/
+
+	//the only difference between DFS and BFS in their non-recursive versions is that DFS uses a stack while BFS uses a queue
+	//in theory we could even make the code better if we have a few functions and depending on what we call we use a stack or queue, so we don't duplicate code
+
+	nodesExpanded = 1;
+
+	std::stack <Tree*> checkNodes;
+	Tree* root = new Tree(startField);
+	Tree* rootPointer = root;
+
+	int fieldHeigth = goalField.getHeigth();
+	int fieldWidth = goalField.getWidth();
+	int moves = 0;
+
+	checkNodes.push(root);
+
+	while (!checkNodes.empty())
+	{
+		Tree* nodeToExplore = checkNodes.top();
+		Field currentField = *nodeToExplore->getField();
+
+		if (currentField == goalField)
+		{
+			if (checkIfPlayerPosIsSame)
+			{
+				if (currentField.getPlayerPos() == goalField.getPlayerPos())
+				{
+					return nodeToExplore;
+				}
+			}
+			else
+			{
+				return nodeToExplore;
+			}
+		}
+		checkNodes.pop();
+
+		//get a random direction
+		Direction randomDir = getRandomDirection();
+
+		int parentDepth = nodeToExplore->getDepth();
+
+		//this is the check to see if it's either the limit or DFS
+		if (parentDepth == limit && limit != -1)
+		{
+			//TODO delete?
+			//skip the expanding and start from the next node
+			continue;
+		}
+
+		//for each of the 4 directions
+		for (int i = 0; i<4; i++)
+		{
+			//create a temporary field
+			Field temp(fieldWidth, fieldHeigth, currentField);
+			parentDepth = nodeToExplore->getDepth();
+
+			if ((temp == (Field)*nodeToExplore->getField()) && temp.getPlayerPos() == nodeToExplore->getField()->getPlayerPos())
+			{
+				//std::cout << "Testing \n";
+				continue;
+			}
+			//if the current direction is the random chosen one, skip so we add it later on top of the stack
+			if (i == randomDir)
+			{
+				continue;
+			}
+			//move player with a static cast from int to Direction 
+			temp.movePlayer(static_cast<Direction> (i));
+
+			//create a new node on the heap and add it to the children of the parent
+			Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+			nodesExpanded++;
+			nodeToExplore->addChild(child);
+			checkNodes.push(child);
+		}
+
+		//the same as in the for but for the random direction
+		Field temp(fieldWidth, fieldHeigth, currentField);
+		parentDepth = nodeToExplore->getDepth();
+		temp.movePlayer(randomDir);
+		Tree *child = new Tree(temp, nodeToExplore, ++parentDepth);
+		nodesExpanded++;
 		nodeToExplore->addChild(child);
 		checkNodes.push(child);
 
@@ -204,11 +425,35 @@ Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosI
 //iterative deepening is just DLS, each time adding 1 to the limit until we get an asnwer
 Tree* doIDS(Field startField, Field goalField, bool checkIfPlayerPosIsSame )
 {
+
+	IDSnodesExpanded = 1;
+
 	for (int i = 0;; i++)
 	{
 		Tree* answer = doDLS(startField, goalField, i, checkIfPlayerPosIsSame);
+
+		IDSnodesExpanded += nodesExpanded;
 		if (answer != nullptr)
 		{
+			nodesExpanded = IDSnodesExpanded;
+			return answer;
+		}
+	}
+}
+
+Tree* doIDSGraph(Field startField, Field goalField, bool checkIfPlayerPosIsSame)
+{
+
+	IDSnodesExpanded = 1;
+
+	for (int i = 0;; i++)
+	{
+		Tree* answer = doDLS(startField, goalField, i, checkIfPlayerPosIsSame);
+
+		IDSnodesExpanded += nodesExpanded;
+		if (answer != nullptr)
+		{
+			nodesExpanded = IDSnodesExpanded;
 			return answer;
 		}
 	}
@@ -226,6 +471,9 @@ Tree* doAStar(Field startField, Field goal, bool checkIfPlayerPosIsSame)
 
 	//we create a priority queue with a new class CostTree, which is just like a Tree but with an added cost parameter
 	//I've also defined a comparator between two CostTrees, so the queue can get the minimal cost each time
+
+	nodesExpanded = 1;
+
 	std::priority_queue<CostTree*, std::vector<CostTree*>, TreeComparator> queue;
 
 	CostTree* root = new CostTree(startField, startField.calculateManhattanDistance(goal));
@@ -273,7 +521,8 @@ Tree* doAStar(Field startField, Field goal, bool checkIfPlayerPosIsSame)
 
 			//we create a new node on the heap, with the cost of the current depth (which is the number of moves up until that state)
 			//and the manhattan distance from the temporary field to the goal field, the queue takes care of the rest
-			CostTree *child = new CostTree(temp, nodeToExplore, nodeToExplore->getDepth() + temp.calculateManhattanDistance(goal), ++parentDepth);
+			CostTree *child = new CostTree(temp, nodeToExplore, nodeToExplore->getDepth() + temp.calculateManhattanDistance(goal,checkIfPlayerPosIsSame), ++parentDepth);
+			nodesExpanded++;
 			nodeToExplore->addChild(child);
 			queue.push(child);
 		}

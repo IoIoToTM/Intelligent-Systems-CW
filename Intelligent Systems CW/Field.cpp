@@ -110,7 +110,7 @@ Block* Field::getBlock(char name)
 }
 
 //calculating Manhattan distance
-int Field::calculateManhattanDistance(Field winningField)
+int Field::calculateManhattanDistance(Field winningField, bool checkPlayerPos)
 {
 	std::vector<Block> winningBlocks = winningField.blocks;
 
@@ -123,15 +123,24 @@ int Field::calculateManhattanDistance(Field winningField)
 
 		distance += distanceBetweenTwoTiles((*currentStateIter), *winningBlock);
 	}
+	if (checkPlayerPos)
+	{
+		distance += distanceBetweenTwoTiles(this->p, winningField.getPlayer());
+	}
 
 	return distance;
 }
 
 
 
-Position Field::getPlayerPos()
+Position Field::getPlayerPos() const
 {
 	return *p.getPosition();
+}
+
+Player Field::getPlayer() const
+{
+	return  this->p;
 }
 
 int Field::getWidth() const

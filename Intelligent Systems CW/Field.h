@@ -40,10 +40,12 @@ public:
 	int distanceBetweenTwoTiles(Tile a, Tile b);
 
 	//calculating the Manhattan distance
-	int calculateManhattanDistance(Field winningField);
+	int calculateManhattanDistance(Field winningField, bool checkPlayerPos = false);
 
 
-	Position getPlayerPos();
+	Position getPlayerPos() const;
+
+	Player getPlayer() const;
 
 	int getWidth() const;
 	int getHeigth() const;

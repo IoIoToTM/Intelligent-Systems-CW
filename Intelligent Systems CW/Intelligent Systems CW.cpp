@@ -18,14 +18,29 @@
 
 #include"Algorithms.h"
 
-
-
-
-
-
 int main()
 {
-	Player p(Position(4,4));
+
+
+	/*
+	How to use:
+	Create a player with a position in the field size(from 1 to the size, not from 0)
+	Create the goal player position the same way
+
+	Create as many blocks as you want with Positions and a char name and then put them in a vector
+
+	Create a field with width, height, and the player and blocks in it
+
+	Do the same for the goal state
+
+	The algorithms each return the goal node, so through that you can follow the path through to the root,
+	or pass it to the printing function
+
+	After the goal is returned, there are 2 global variables, numberOfMoves and nodesExpanded that you can print or do whatever you want with
+
+	*/
+	Player startPlayer(Position(4,4));
+	Player goalPlayer(Position(1,2));
 
 
 	
@@ -38,31 +53,40 @@ int main()
 	blocks.push_back(b);
 	blocks.push_back(c);
 
-	std::vector<Block> winningBlocks;
-	winningBlocks.push_back(Block(Position(2, 3), 'A'));
-	winningBlocks.push_back(Block(Position(3, 4), 'B'));
-	winningBlocks.push_back(Block(Position(4, 4), 'C'));
-	/*winningBlocks.push_back(a);
-	winningBlocks.push_back(b);
-	winningBlocks.push_back(Block(Position(4,4),'C'));*/
+	std::vector<Block> assignmentGoal;
+	assignmentGoal.push_back(Block(Position(2, 2), 'A'));
+	assignmentGoal.push_back(Block(Position(2, 3), 'B'));
+	assignmentGoal.push_back(Block(Position(2, 4), 'C'));
 
-
-
-	std::cout << "Size of Tree " << sizeof(Tree)<<std::endl;
-
+	std::vector<Block> myGoal;
+	myGoal.push_back(Block(Position(2,3), 'A'));
+	myGoal.push_back(Block(Position(3, 4), 'B'));
+	myGoal.push_back(Block(Position(4, 4), 'C'));
 	
-
-	Field f(4, 4, p, blocks);
 	
-	f.printField();
+	std::cout << "Start state is:\n";
+	Field startField(4, 4, startPlayer, blocks);
+	startField.printField();
 
-	Field f1(4, 4, p, winningBlocks);
+	Field assignmentGoalField(4, 4, startPlayer, assignmentGoal);
+	
+	std::cout << "Goal state is:\n";
+	Field myGoalField(4, 4, goalPlayer, assignmentGoal);
+	myGoalField.printField();
 
-	Tree* result = doAStar(f, f1);
-	std::cout << std::endl;
+
+	std::cout << "------------------- \n\n";
+
+	int total = 0;
+
+	Tree* result = doIDSGraph(startField, myGoalField);
+	std::cout << "Result is: \n\n";
 
 	printPathFromLeafToRoot(result);
 
+	std::cout << "Nodes expanded is " << nodesExpanded<<" with "<<numberOfMoves<<" number of moves";
+
+	
 	int x;
 	std::cin >> x;
 
