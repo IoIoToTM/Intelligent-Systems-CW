@@ -77,7 +77,15 @@ void Field::movePlayer(Direction d)
 		Block* b = getBlockAtPos(pos);
 		if (b != nullptr)
 		{
-			b->move(getOppositeDirection(d));
+			Direction opposite = getOppositeDirection(d);
+			if (b->isMovable())
+			{
+				b->move(opposite);
+			}
+			else
+			{
+				p.move(opposite);
+			}
 		}
 
 	}

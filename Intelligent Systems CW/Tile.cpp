@@ -12,8 +12,6 @@ Tile::Tile(Position pos)
 	this->pos = pos;
 }
 
-
-
 const Position* Tile::getPosition() const
 {
 	return &pos ;

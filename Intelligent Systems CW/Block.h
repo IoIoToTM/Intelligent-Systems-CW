@@ -9,12 +9,15 @@ public:
 	Block();
 	friend bool operator==(const Block& left, const Block& right);
 
-	Block(Position pos, char name);
+	Block(Position pos, char name, bool movable = true);
 	~Block();
+
+	bool isMovable() const;
 
 	char getName() const;
 
 private:
 	char name;
+	bool movable;
 };
 

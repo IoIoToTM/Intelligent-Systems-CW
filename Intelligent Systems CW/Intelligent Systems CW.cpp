@@ -40,7 +40,7 @@ int main()
 
 	*/
 	Player startPlayer(Position(4,4));
-	Player goalPlayer(Position(1,2));
+	Player goalPlayer(Position(1,1));
 
 
 	
@@ -59,8 +59,8 @@ int main()
 	assignmentGoal.push_back(Block(Position(2, 4), 'C'));
 
 	std::vector<Block> myGoal;
-	myGoal.push_back(Block(Position(2,3), 'A'));
-	myGoal.push_back(Block(Position(3, 4), 'B'));
+	myGoal.push_back(Block(Position(2, 4), 'A'));
+	myGoal.push_back(Block(Position(2, 3), 'B'));
 	myGoal.push_back(Block(Position(4, 4), 'C'));
 	
 	
@@ -71,7 +71,7 @@ int main()
 	Field assignmentGoalField(4, 4, startPlayer, assignmentGoal);
 	
 	std::cout << "Goal state is:\n";
-	Field myGoalField(4, 4, goalPlayer, assignmentGoal);
+	Field myGoalField(4, 4, goalPlayer, myGoal);
 	myGoalField.printField();
 
 
@@ -79,7 +79,7 @@ int main()
 
 	int total = 0;
 
-	Tree* result = doIDSGraph(startField, myGoalField);
+	Tree* result = doIDS(startField, myGoalField,true);
 	std::cout << "Result is: \n\n";
 
 	printPathFromLeafToRoot(result);

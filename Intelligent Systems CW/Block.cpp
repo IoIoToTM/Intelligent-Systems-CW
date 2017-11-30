@@ -6,9 +6,10 @@ Block::Block() :Tile()
 {
 }
 
-Block::Block(Position pos,char name) : Tile(pos)
+Block::Block(Position pos,char name, bool movable) : Tile(pos)
 {
 	this->name = name;
+	this->movable = movable;
 }
 
 
@@ -26,6 +27,11 @@ bool operator==(const Block& left, const Block& right)
 Block::~Block() 
 {
 	
+}
+
+bool Block::isMovable() const
+{
+	return movable;
 }
 
 char Block::getName() const

@@ -40,10 +40,7 @@ Tree* doBFSGraph(Field startField, Field goalField, bool checkIfPlayerPosIsSame 
 
 Tree* doDLS(Field startField, Field goalField, int limit, bool checkIfPlayerPosIsSame = false);
 
-Tree* doDLSWithGraph(Field startField, Field goalField, int limit, bool checkIfPlayerPosIsSame = false);
-
 Tree* doIDS(Field startField, Field goalField, bool checkIfPlayerPosIsSame = false);
-Tree* doIDSGraph(Field startField, Field goalField, bool checkIfPlayerPosIsSame = false);
 
 Tree* doDFS(Field startField, Field goalField, bool checkIfPlayerPosIsSame = false);
 
